@@ -6,8 +6,10 @@ class LoginController(BaseController):
      self.rotas = [
         ('/paginalogin','paginalogin',self.pagina_login),
         ('/paginacadastro','paginacadastro',self.pagina_cadastro),
-        ('/entrar','entrar',self.entrar,["post"])
+        ('/entrar','entrar',self.entrar,['POST']),
+        ('/registrar','registrar',self.cadastrar,['POST'])
      ]
+     self.usuarios = [{"email":"fernando@gmail.com","senha":"12345"}]
      super().__init__(app)
 
     def pagina_login(self):

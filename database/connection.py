@@ -42,6 +42,14 @@ class BancoMysql:
        self.cursor.execute(sql,parametros or ())
        self.conexao.commit()
 
+    def consultar_um(self,sql,parametros=None):
+       self.cursor.execute(sql,parametros or ())
+       return self.cursor.fetchone()
+   
+    def consultar(self, sql, parametros = None):
+       self.cursor.execute(sql,parametros or ())
+       self.cursor.fetchall()
+
     def fechar(self):
        if self.cursor:
           self.cursor.close()
