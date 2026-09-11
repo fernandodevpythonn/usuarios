@@ -45,13 +45,12 @@ class UsuarioRepository:
          """
         )
     
-    def criar(self,nome,email,senha_hash,perfil = "usuario"):
+    def criar(self,nome,senha,perfil="usuario"):
         self.db.executar(
             """
             INSERT INTO usuarios
             (
                nome,
-               email,
                senha,
                perfil
             )
@@ -59,15 +58,23 @@ class UsuarioRepository:
             (
               %s,
               %s,
-              %s,
               %s
             )
             """,
             (
                  nome,
-                 email,
-                 senha_hash,
+                 senha,
                  perfil
             )
         )
         return self.db.cursor.lastrowid
+    
+    def existe(self,nome):
+        resultado = self.db.consultar_um(
+            """
+            SELECT id
+            FROM usuarios
+            WHERE nome = %s
+            """,(nome,)
+        )
+        return resultado is not None

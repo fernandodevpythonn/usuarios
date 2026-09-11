@@ -15,7 +15,7 @@ class UsuarioService:
         usuario_id = resultado[0]
         nome_usuario = resultado[1]
         email = resultado[2]
-        senha = resultado[3]
+        senha_hash = resultado[3]
         perfil = resultado[4]
 
         senha_valida = bcrypt.checkpw(senha.encode(),(senha.encode()))
@@ -29,3 +29,12 @@ class UsuarioService:
             "email": email,
             "perfil": perfil
         }
+    def cadastrar(self,usuario,senha,perfil="usuario"):
+        if self.reposotory.existe(usuario):
+            raise ValueError("usuário já existe")
+         
+        return self.reposotory.criar(
+            usuario = usuario,
+            senha = senha,
+            perfil = perfil
+        )
