@@ -3,6 +3,7 @@ from flask import render_template,session,url_for,request,redirect
 from repositories.usuario_repository import UsuarioRepository
 from services.usuario_service import UsuarioService
 from database.connection import BancoMysql
+from mysql.connector import Error
 
 
 class LoginController(BaseController):
@@ -30,45 +31,45 @@ class LoginController(BaseController):
        return render_template("cadastro_pagina.html")
     
     def entrar(self):
-       usuario = request.form.get("usuario")
+       nome = request.form.get("nome")
        senha = request.form.get("senha")
 
-       if not usuario or not senha:
+       if not nome or not senha:
           erro = "preencha o usuario e senha."
 
           return render_template(
              "login_pagina.html", erro = erro
           )
        
-       usuario_valido = self.usuario_service.autenticar(usuario,senha)
+       usuario_valido = self.usuario_service.autenticar(nome,senha)
        if usuario_valido:
           session["usuario_logado"] = True
           session["usuario_id"] = usuario_valido["id"]
-          session["usuario"] = usuario_valido["usuario"]
+          session["nome"] = usuario_valido["nome"]
           session["perfil_logado"] = usuario_valido["perfil"]
 
           return redirect(
              url_for("home")
           )
+       else:
+          erro = "usuario ou senha incorretos"
+
+          return render_template(
+             "login_pagina.html",erro = erro
+          )
 
     def registrar(self):
-       usuario = request.form.get("usuario")
+       nome = request.form.get("nome")
        senha = request.form.get("senha")
 
-       if not usuario or not senha:
+       if not nome or not senha:
           erro = "usuário e senha são obrigatórios"
 
           return render_template("cadastro_pagina.html",erro=erro)
-       
        try:
-          usuario_id = self.usuario_service.cadastrar(
-             usuario = usuario,
-             senha = senha,
-             perfil = "usuario"
-          )
-       except ValueError as e:
-          return render_template("cadastro_pagina.html",erro=str(e))
-       
+          self.usuario_service.cadastrar(nome=nome,senha=senha,perfil="usuario")
+       except Error as e:
+          print(f"Erro:{e}, Usuário não cadastrado.")
        sucesso = "cadastro realizado, faça login."
        
        return render_template("login_pagina.html",sucesso=sucesso)

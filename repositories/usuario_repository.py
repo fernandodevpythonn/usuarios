@@ -4,18 +4,17 @@ class UsuarioRepository:
     def __init__(self,banco):
         self.db = banco
     
-    def buscar_por_usuario(self,usuario):
+    def buscar_por_usuario(self,nome):
         return self.db.consultar_um(
          """
          SELECT 
            id,
            nome,
-           email,
            senha,
            perfil
          FROM usuarios
          WHERE nome = %s
-         """,(usuario,)
+         """,(nome,)
         )
     
     def buscar_por_id(self,usuario_id):
@@ -24,7 +23,6 @@ class UsuarioRepository:
           SELECT 
             id,
             nome,
-            email,
             perfil
           FROM usuarios
           WHERE id = %s
@@ -37,7 +35,6 @@ class UsuarioRepository:
          SELECT 
            id,
            nome,
-           email,
            senha,
            perfil
          FROM usuarios
@@ -45,7 +42,7 @@ class UsuarioRepository:
          """
         )
     
-    def criar(self,nome,senha,perfil="usuario"):
+    def criar(self,nome,senha,perfil):
         self.db.executar(
             """
             INSERT INTO usuarios
@@ -78,3 +75,4 @@ class UsuarioRepository:
             """,(nome,)
         )
         return resultado is not None
+  

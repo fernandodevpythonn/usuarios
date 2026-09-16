@@ -10,8 +10,8 @@ tabelas = BancoTabelas(banco)
 tabelas.criar_tabelas()
 load_dotenv()
 
-
 app = Flask(__name__)
+app.secret_key = os.getenv("SECRET_KEY")
 basico_controller(app)
 LoginController(app)
 

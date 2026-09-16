@@ -2,11 +2,11 @@ import bcrypt
 
 class UsuarioService:
     def __init__(self,repository):
-        self.reposotory = repository
+        self.repository = repository
 
-    def autenticar(self, usuario, senha):
+    def autenticar(self, nome, senha):
         resultado = self.repository.buscar_por_usuario(
-            usuario
+            nome
         )
 
         if not resultado:
@@ -14,27 +14,22 @@ class UsuarioService:
         
         usuario_id = resultado[0]
         nome_usuario = resultado[1]
-        email = resultado[2]
-        senha_hash = resultado[3]
-        perfil = resultado[4]
+        senha_hash = resultado[2]
+        perfil = resultado[3]
 
-        senha_valida = bcrypt.checkpw(senha.encode(),(senha.encode()))
-
-        if not senha_valida:
-            return None
+        
         
         return {
             "id": usuario_id,
             "nome": nome_usuario,
-            "email": email,
             "perfil": perfil
         }
-    def cadastrar(self,usuario,senha,perfil="usuario"):
-        if self.reposotory.existe(usuario):
+    def cadastrar(self,nome,senha,perfil="usuario"):
+        if self.repository.existe(nome):
             raise ValueError("usuário já existe")
          
-        return self.reposotory.criar(
-            usuario = usuario,
+        return self.repository.criar(
+            nome = nome,
             senha = senha,
             perfil = perfil
         )
