@@ -13,6 +13,7 @@ class LoginController(BaseController):
         ('/paginacadastro','paginacadastro',self.pagina_cadastro),
         ('/entrar','entrar',self.entrar,['POST']),
         ('/registrar','registrar',self.registrar,['POST']),
+        ('/logout','logout',self.logout)
      ]
 
      super().__init__(app)
@@ -73,3 +74,11 @@ class LoginController(BaseController):
        sucesso = "cadastro realizado, faça login."
        
        return render_template("login_pagina.html",sucesso=sucesso)
+    
+
+    def logout(self):
+       session.clear()
+
+       return redirect(
+          url_for("paginalogin")
+       )
