@@ -3,6 +3,9 @@ from controllers.login_controller import LoginController
 from database.connection import BancoMysql
 from database.tables import BancoTabelas
 from dotenv import load_dotenv
+from repositories.auditoria_repository import AuditoriaRepository
+from controllers.auditoria_controller import AuditoriaController
+
 import os
 from flask import Flask
 banco = BancoMysql()
@@ -10,8 +13,11 @@ tabelas = BancoTabelas(banco)
 tabelas.criar_tabelas()
 load_dotenv()
 
+auditoria_repository = AuditoriaRepository(banco)
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
+
+AuditoriaController(app)
 basico_controller(app)
 LoginController(app)
 

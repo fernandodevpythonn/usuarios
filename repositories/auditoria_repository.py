@@ -11,7 +11,7 @@ class AuditoriaRepository:
               usuario_id,
               acao,
               entidade,
-              endtidade_id,
+              entidade_id,
               descricao,
               ip
             )
