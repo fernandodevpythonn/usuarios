@@ -4,6 +4,8 @@ from repositories.usuario_repository import UsuarioRepository
 from services.usuario_service import UsuarioService
 from database.connection import BancoMysql
 from mysql.connector import Error
+from repositories.auditoria_repository import AuditoriaRepository
+from services.auditoria_service import AuditoriaService
 
 
 class LoginController(BaseController):
@@ -21,6 +23,8 @@ class LoginController(BaseController):
      self.db = BancoMysql()
      self.usuario_repository = UsuarioRepository(self.db)
      self.usuario_service = UsuarioService(self.usuario_repository)
+     self.auditoria_repository = AuditoriaRepository(self.db)
+     self.auditoria_service = AuditoriaService(self.auditoria_repository)
 
     def pagina_login(self):
        if session.get("usuario_logado"):
@@ -44,11 +48,15 @@ class LoginController(BaseController):
        
        usuario_valido = self.usuario_service.autenticar(nome,senha)
        if usuario_valido:
+         #  adiciona os dados do usuario na sessao, para depois poder consultar
           session["usuario_logado"] = True
           session["usuario_id"] = usuario_valido["id"]
           session["nome"] = usuario_valido["nome"]
           session["perfil_logado"] = usuario_valido["perfil"]
-
+          
+          self.auditoria_service.registrar(
+             usuario_id=usuario_valido["id"],acao="LOGIN_SUCESSO",entidade="LOGIN",descricao="login realizado",ip=request.remote_addr
+          )
           return redirect(
              url_for("home")
           )
@@ -77,6 +85,10 @@ class LoginController(BaseController):
     
 
     def logout(self):
+       
+       usuario_id = session.get("usuario_id")
+       self.auditoria_service.registrar(usuario_id=usuario_id,acao="LOGOUT",entidade="LOGIN",descricao="logout realizado",ip=request.remote_addr)
+
        session.clear()
 
        return redirect(

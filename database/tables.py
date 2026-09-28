@@ -1,3 +1,4 @@
+import bcrypt
 
 class BancoTabelas:
     def __init__(self,banco):
@@ -6,6 +7,7 @@ class BancoTabelas:
     def criar_tabelas(self):
         self.criar_tabela_usuarios()
         self.criar_tabela_auditoria()
+        self.usuario_admin()
 
     def criar_tabela_usuarios(self):
         self.banco.executar("""
@@ -33,3 +35,33 @@ class BancoTabelas:
                 ON DELETE SET NULL
             )
         """)
+
+    def usuario_admin(self):
+        resultado = self.banco.consultar_um(
+            """SELECT id FROM usuarios WHERE perfil = %s""",
+            ("administrador",)
+        )
+
+        if not resultado:
+            senha_hash = bcrypt.hashpw("12345".encode(),bcrypt.gensalt()).decode()
+
+            self.banco.executar(
+                """
+                INSERT INTO usuarios(
+                 nome,
+                 senha,
+                 perfil
+                )
+                VALUES
+                (
+                 %s,
+                 %s,
+                 %s
+                )
+                """,
+                (
+                    "admin@gmail.com",
+                    senha_hash,
+                    "administrador"
+                )
+            )
