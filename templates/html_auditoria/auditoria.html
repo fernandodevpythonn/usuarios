@@ -25,6 +25,14 @@
         Exportar Excel
     </a>
     </a>
+    <a href="{{url_for(
+        'auditoria_pdf',
+        acao=acao,
+        entidade=entidade,
+        usuario_id=usuario_id
+    )}}">
+        Exportar Pdf
+    </a>
     </div>
 
     <form

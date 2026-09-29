@@ -1,4 +1,4 @@
-from flask import render_template,request,send_file
+from flask import render_template,request,send_file,session
 from controllers.base_controller import BaseController
 from database.connection import BancoMysql
 from repositories.auditoria_repository import AuditoriaRepository
@@ -19,7 +19,8 @@ class AuditoriaController(BaseController):
     def __init__(self,app):
         self.rotas = [
             ('/auditoria','auditoria',self.listar,['GET'],'administrador'),
-            ('/auditoria/excel','auditoria_excel',self.exportar_excel,['GET'],'administrador')
+            ('/auditoria/excel','auditoria_excel',self.exportar_excel,['GET'],'administrador'),
+            ('/auditoria/pdf','auditoria_pdf',self.exportar_pdf,['GET'],'administrador')
         ]
 
         super().__init__(app)
@@ -219,3 +220,59 @@ class AuditoriaController(BaseController):
                 "officedocument.spreadsheetml.sheet"
             )
         )
+    
+    def valor_ou_vazio(self,valor):
+        #usado para não ficar retornando (valor null)
+        return "" if valor is None else str(valor)
+    
+    def exportar_pdf(self):
+        acao = request.args.get("acao")
+        entidade = request.args.get("entidade")
+        usuario_id = request.args.get("usuario_id")
+        auditorias = self.auditoria_service.listar_para_relatorio(acao=acao,entidade=entidade,usuario_id=usuario_id)
+        arquivo = BytesIO()
+        pdf = SimpleDocTemplate(arquivo,pagesize=landscape(A4))
+        dados = []
+        dados.append(["nome","acao","entidade","entidade id","descricao","ip","data/hora"])
+
+        for auditoria in auditorias:
+            dados.append([
+                self.valor_ou_vazio(auditoria["nome"]),
+                self.valor_ou_vazio(auditoria["acao"]),
+                self.valor_ou_vazio(auditoria["entidade"]),
+                self.valor_ou_vazio(auditoria["entidade_id"]),
+                self.valor_ou_vazio(auditoria["descricao"]),
+                self.valor_ou_vazio(auditoria["ip"]),
+                auditoria["data_hora"].strftime("%d/%m/%Y %H:%M:%S")
+                  if auditoria["data_hora"] is not None else ""
+            ])
+        
+        tabela = Table(dados,colWidths=[100,70,100,50,280,60,80])
+
+        tabela.setStyle(
+            TableStyle([
+                ("BACKGROUND",(0, 0),(-1, 0),colors.HexColor("#1F4E78")),
+                ("TEXTCOLOR",(0, 0),(-1, 0),colors.white),
+                ("FONTNAME",(0, 0),(-1, 0),"Helvetica-Bold"),
+                ("FONTSIZE",(0, 0),(-1, -1),7),
+                ( "GRID", (0, 0), (-1, -1), 0.5, colors.grey),
+                ("ALIGN",(0, 0),(-1, 0),"CENTER"),
+            ])
+        )
+
+        self.auditoria_service.registrar(
+            usuario_id=session.get("usuario_id"),
+            acao="RELATORIO_PDF",
+            entidade="RELATORIO_AUDITORIA",
+            entidade_id = usuario_id,
+            descricao=(
+                f"relatorio de auditorio em pdf gerado por "
+                f"{session.get('usuario')}"
+            ),
+            ip=request.remote_addr
+        )
+
+        pdf.build([tabela])
+        arquivo.seek(0)
+        nome_arquivo = (f"relatorio_auditoria_"f"{datetime.now().strftime('%d-%m-%Y_%H-%M-%S')}"f".pdf")
+        return send_file(arquivo,as_attachment=True,download_name=nome_arquivo,mimetype="application/pdf")
