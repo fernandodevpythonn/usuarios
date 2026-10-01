@@ -6,7 +6,8 @@ from database.connection import BancoMysql
 from mysql.connector import Error
 from repositories.auditoria_repository import AuditoriaRepository
 from services.auditoria_service import AuditoriaService
-
+from repositories.login_repository import LoginRepository
+from services.login_service import LoginService
 
 class LoginController(BaseController):
     def __init__(self,app):
@@ -25,6 +26,8 @@ class LoginController(BaseController):
      self.usuario_service = UsuarioService(self.usuario_repository)
      self.auditoria_repository = AuditoriaRepository(self.db)
      self.auditoria_service = AuditoriaService(self.auditoria_repository)
+     self.login_repository = LoginRepository(self.db)
+     self.login_service = LoginService(self.login_repository)
 
     def pagina_login(self):
        if session.get("usuario_logado"):
@@ -54,6 +57,10 @@ class LoginController(BaseController):
           session["nome"] = usuario_valido["nome"]
           session["perfil_logado"] = usuario_valido["perfil"]
           
+          self.login_service.registrar_login(
+             usuario_valido["id"]
+          )
+
           self.auditoria_service.registrar(
              usuario_id=usuario_valido["id"],acao="LOGIN_SUCESSO",entidade="LOGIN",descricao="login realizado",ip=request.remote_addr
           )

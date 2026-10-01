@@ -8,6 +8,7 @@ class BancoTabelas:
         self.criar_tabela_usuarios()
         self.criar_tabela_auditoria()
         self.usuario_admin()
+        self.criar_tabela_logins()
 
     def criar_tabela_usuarios(self):
         self.banco.executar("""
@@ -65,3 +66,17 @@ class BancoTabelas:
                     "administrador"
                 )
             )
+
+    def criar_tabela_logins(self):
+        self.banco.executar("""
+          CREATE TABLE IF NOT EXISTS logins (
+                            
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            usuario_id INT NOT NULL,
+            data_hora TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (usuario_id)
+                REFERENCES usuarios(id)
+                ON DELETE CASCADE
+          )
+    
+    """)

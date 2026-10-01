@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro</title>
+    <link rel="stylesheet" href="../static/css/global.css">
+    <link rel="stylesheet" href="../static/css/login.css">
 </head>
 <body>
     <header>
@@ -12,13 +14,17 @@
     <main>
         <form action="{{url_for('registrar')}}" method="POST">
             <p>
-                <label for="nome">Nome:</label>
+                <label for="nome">Usuário:</label>
                 <input type="text" name="nome" id="nome" required>
             </p>
             <p><label for="senha">Senha:</label>
                 <input type="password" name="senha" id="senha" required>
             </p>
-            <input type="submit" value="Cadastrar">
+            <p>
+                <input type="submit" value="Cadastrar">
+                <button><a href="/paginalogin">Voltar</a></button>
+            </p>
+           
         </form>
     </main>
 </body>

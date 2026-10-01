@@ -1,0 +1,14 @@
+header{
+    border: 1px solid black;
+    display: flex;
+    gap: 20px;
+    padding: 10px;
+    justify-content: center;
+}
+button > a{
+    text-decoration: none;
+    color: black;
+}
+body{
+    background-image: linear-gradient(to right,gray,lightgray,white);
+}
