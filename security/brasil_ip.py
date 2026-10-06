@@ -3,7 +3,7 @@ import ipaddress
 class ValidarIP:
     def __init__(self):
         self.redes_autorizadas = [
-            ipaddress.ip_network("127.9.9.1/32")
+            ipaddress.ip_network("127.0.0.1/32")
         ]
         
     def ip_autorizado(self,ip:str) -> bool:

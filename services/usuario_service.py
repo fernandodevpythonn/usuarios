@@ -33,3 +33,6 @@ class UsuarioService:
             senha = senha,
             perfil = perfil
         )
+    
+    def listar_todos(self):
+        return self.repository.listar_todos()
