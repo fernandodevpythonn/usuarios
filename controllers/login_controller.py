@@ -62,8 +62,8 @@ class LoginController(BaseController):
           )
 
           self.auditoria_service.registrar(
-             usuario_id=usuario_valido["id"],acao="LOGIN_SUCESSO",entidade="LOGIN",descricao="login realizado",ip=request.remote_addr
-          )
+             usuario_id=usuario_valido["id"],acao="LOGIN_SUCESSO",entidade="LOGIN",descricao="login realizado",ip=request.remote_addr)
+             
           return redirect(
              url_for("home")
           )

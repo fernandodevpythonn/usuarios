@@ -11,28 +11,30 @@
     <header>
         <h1>usuarios</h1>
     </header>
-    <button>
-        <a href="{{url_for('cadastrar_usuario')}}">+ Novo usuario</a>
-    </button>
+
+        <a href="{{url_for('cadastrar_usuario')}}" class="button">+ Novo usuario</a>
     <div class="usuarios_grid">
         {%for usuario in usuarios %}
 
          <div class="usuario_card">
             <div class="usuario_avatar">
-                {{usuario[1][0]upper}}
+                {{usuario[1][0] | upper}}
             </div>
-            <h2>{{usuario[1]}}</h2>
-            <span class="
-            usuario-perfil
-            {% if usuario[3] == 'administrador'%}
-              administrador
-            {% endif %}
-            ">
-              {% if usuario[3] == 'administrador%}
-                administrador
-              {% endif %}
-            </span>
+            <p>
+              <h2>{{usuario[1]}} - 
+                <span>
+                  {% if usuario[3] == 'administrador'%}
+                    administrador
+                  {% else %}
+                    usuario
+                  {% endif %}
+                </span>
+              </h2> 
+              
+            </p>
+           
          </div>
+      {% endfor %}
     </div>
 </body>
 </html>

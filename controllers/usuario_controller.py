@@ -36,10 +36,9 @@ class UsuarioController(BaseController):
     def cadastrar(self):
             if request.method == 'POST':
 
-             nome_usuario = request.form.get("usuario")
+             nome_usuario = request.form.get("nome")
              senha = request.form.get("senha")
              confirmar_senha = request.form.get("confirmar_senha")
-             data_nascimento = request.form.get("nascimento")
              perfil = request.form.get("perfil")
 
 
@@ -47,7 +46,6 @@ class UsuarioController(BaseController):
                 not nome_usuario
                 or not senha
                 or not confirmar_senha
-                or not data_nascimento
                 or not perfil
              ):
 
@@ -71,11 +69,9 @@ class UsuarioController(BaseController):
 
                 usuario_id = self.usuario_service.cadastrar(
 
-                    usuario=nome_usuario,
+                    nome=nome_usuario,
 
                     senha=senha,
-
-                    data_nascimento=data_nascimento,
 
                     perfil=perfil
                 )
