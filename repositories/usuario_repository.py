@@ -42,7 +42,7 @@ class UsuarioRepository:
          """
         )
     
-    def criar(self,nome,senha,perfil):
+    def criar(self,nome,senha_hash,perfil):
         self.db.executar(
             """
             INSERT INTO usuarios
@@ -60,7 +60,7 @@ class UsuarioRepository:
             """,
             (
                  nome,
-                 senha,
+                 senha_hash,
                  perfil
             )
         )

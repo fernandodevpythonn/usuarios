@@ -1,7 +1,6 @@
 class AuditoriaRepository:
     def __init__(self,banco):
         self.db = banco
-    
 
     def registrar(self,usuario_id,acao,entidade,entidade_id=None,descricao=None,ip=None):
         self.db.executar(
@@ -61,7 +60,6 @@ class AuditoriaRepository:
 
             WHERE 1 = 1
         """
-
 
         parametros = []
 
@@ -132,6 +130,5 @@ class AuditoriaRepository:
             }
 
             auditorias.append(auditoria)
-
 
         return auditorias

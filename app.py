@@ -48,5 +48,6 @@ AuditoriaController(app)
 basico_controller(app)
 LoginController(app)
 UsuarioController(app)
+
 if __name__ == "__main__":
     app.run(debug=os.getenv("DEBUG","False").lower()=="true")
